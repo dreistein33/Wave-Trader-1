@@ -6,21 +6,28 @@ import time
 
 from binance import Client
 
+from .mathutils import convert_percent_to_mul
+
 
 class WaveEngine:
 
-    def __init__(self):
+    def __init__(self, path='settings.json'):
+        self.path = path
         self.PUBKEY = dotenv.dotenv_values('.env')['PUBLICKEY']
         self.PRIVKEY = dotenv.dotenv_values('.env')['PRIVKEY']
 
-    def get_settings(self, path='settings.json'):
         with open(path, 'r') as f:
-            content = json.load(f)
-        symbol = content['symbol']
-        sell_ptg = content['sell_percentage']
-        stop_loss = content['stop_loss']
-        return symbol, sell_ptg, stop_loss
+            self.content = json.load(f)
+
+        self.symbol = self.content['symbol']
+        self.sell_ptg = self.content['sell_percentage']
+        self.stop_loss = self.content['stop_loss']
+        self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
+        self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
 
 
-PATH = os.getcwd()
-print(PATH)
+
+
+
+
+
