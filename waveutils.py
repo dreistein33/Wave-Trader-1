@@ -22,3 +22,5 @@ class WaveEngine:
         return symbol, sell_ptg, stop_loss
 
 
+PATH = os.getcwd()
+print(PATH)
