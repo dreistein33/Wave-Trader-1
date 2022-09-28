@@ -15,6 +15,7 @@ pip install requests
 # Objectives and To-Do List
 - [X] Read a cryptocurrency informations and filter average prices
 - [ ] Create a easy settings file and a reader of thoses informations to be used inside the main.py
+- [ ] Automatically calculate the best sell percentage price (optional usage)
 - [ ] A average stabilizer to deal with price dumping
 - [ ] A average stabilizer to deal with price bump
 - [ ] UI visualizer (price candles, sell, buy, average and stop-loss lines)
