@@ -7,19 +7,21 @@ from colorama import Fore, Back, Style
 from apscheduler.schedulers.blocking import BlockingScheduler
 import json
 
-client = Client("api_key", "secret_key") 
+path = str(os.path.abspath(__file__)).replace("main.py","") #Save the path where this code is running for later usage
+f = open(f'{path}\settings.json') #Read the file settings file
+settings = json.load(f)
+symbol = settings['symbol']
+client = Client(settings['public_api'], settings['private_api'], {"verify": True, "timeout": 100}) #Request from Binance informations about your account
 
-tickers = client.get_ticker(symbol='SANTOSUSDT') #Returns the 24 hours metrics
-avg =  client.get_avg_price(symbol='SANTOSUSDT') #Returns a 5 minutes avg price
-print(tickers) 
-print(avg)
-sleep(10)  
+tickers = client.get_ticker(symbol=symbol) #Returns the 24 hours metrics
+avg =  client.get_avg_price(symbol=symbol) #Returns a 5 minutes avg price
 
 def filter_parameters():
-    f = open(r'\WaveTrader\settings.json') #Read the file settings file
+    f = open(f'{path}\settings.json')  #Read the file settings file
     data = json.load(f)
     sell_percentage = data['sell_percentage'] 
     stop_loss = data['stop_loss']
+    #The reason why this code repeats here and the file is read again, is to let the user change tha parameters while the software is running
     f.close()
 
     #The code bellow is basically a system to turn the sell percentage into multipliers, so
@@ -37,7 +39,7 @@ def filter_parameters():
 def generate_new_average(): #A function that returns the informations about the coin selected, everytime it's called, it gets the new metrics and calculates the avg prices
     global ticker_avg, sell_price, buy_price, stop_loss_price
     sell_percentage_f, buy_price_f, stop_loss_price_f = filter_parameters()
-    tickers = client.get_ticker(symbol='SANTOSUSDT')
+    tickers = client.get_ticker(symbol=symbol)
     ticker_avg = tickers['weightedAvgPrice']
     sell_price = float(ticker_avg)* sell_percentage_f
     buy_price = float(ticker_avg)* buy_price_f
@@ -46,7 +48,7 @@ def generate_new_average(): #A function that returns the informations about the 
 def print_data():
     os.system('cls')
     
-    data = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=SANTOSUSDT")  
+    data = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}")  
     data = data.json()
     actual_price = data['price']
     print(Fore.WHITE + '\n==================  ' + Fore.CYAN + 'Ticker AVG Price [24H]' + Fore.WHITE + '  ==================')
