@@ -24,6 +24,7 @@ def filter_parameters():
     sell_percentage = data['sell_percentage'] 
     stop_loss = data['stop_loss']
     #The reason why this code repeats here and the file is read again, is to let the user change tha parameters while the software is running
+    # I don't get it xD - Kuba.
     f.close()
 
     #The code bellow is basically a system to turn the sell percentage into multipliers, so
