@@ -10,10 +10,14 @@ pip install binance
 pip install colorama
 pip install apscheduler
 pip install requests
+pip install pandas
+pip install pandas-datareader
+pip install plotly
 ```
 
 # Objectives and To-Do List
 - [X] Read a cryptocurrency informations and filter average prices
+- [ ] Put all depencies in a requirements.txt
 - [ ] Create a easy settings file and a reader of thoses informations to be used inside the main.py
 - [ ] Automatically calculate the best sell percentage price (optional usage)
 - [ ] A average stabilizer to deal with price dumping

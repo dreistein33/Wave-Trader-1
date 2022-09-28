@@ -59,7 +59,7 @@ def print_data():
     print(Fore.WHITE + 'Actual Price:           ' + Fore.CYAN + f'{round(float(actual_price), 4)}')
 
 def price():
-    data = requests.get("https://api.binance.com/api/v3/ticker/price?symbol=SANTOSUSDT")  #Returns the real time price of a coin
+    data = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={symbol}")    #Returns the real time price of a coin
     data = data.json()
     actual_price = data['price']
     sell_price_f = sell_price * 1.05
