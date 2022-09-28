@@ -7,15 +7,17 @@ from colorama import Fore, Back, Style
 from apscheduler.schedulers.blocking import BlockingScheduler
 import json
 
+from waveutils import WaveEngine
+
 PATHold = str(os.path.abspath(__file__)).replace("main.py", "")  # Save the PATH where this code is running for later usage
 # Consider using os.getcwd() instead. -Kuba
 PATH = os.getcwd()
-
+eng = WaveEngine()
 with open(f'{PATH}\settings.json') as f: # Read the file settings file
     settings = json.load(f)
     
 symbol = settings['symbol']
-client = Client(settings['public_api'], settings['private_api'], {"verify": True, "timeout": 100})  # Request from Binance informations about your account
+client = Client(eng.PUBKEY, eng.PRIVKEY, {"verify": True, "timeout": 100})  # Request from Binance informations about your account
 tickers = client.get_ticker(symbol=symbol)  # Returns the 24 hours metrics
 avg = client.get_avg_price(symbol=symbol)  # Returns a 5 minutes avg price
 
@@ -91,7 +93,7 @@ price()
 
 # scheduler is a cool way to run fuctions in x time, here it's used to update the avg prices in x time, so the bot keeps working
 # with recent metrics, it's probably generating new averages every 6 hours
-scheduler = BlockingScheduler() 
+scheduler = BlockingScheduler()
 scheduler.add_job(print_data, 'interval', seconds = 2)  # Just to see what's happening
 scheduler.add_job(generate_new_average, 'interval', seconds = 30)
 scheduler.start()
