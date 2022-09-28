@@ -7,8 +7,9 @@ from colorama import Fore, Back, Style
 from apscheduler.schedulers.blocking import BlockingScheduler
 import json
 
-PATH = str(os.path.abspath(__file__)).replace("main.py", "")  # Save the PATH where this code is running for later usage
+PATHold = str(os.path.abspath(__file__)).replace("main.py", "")  # Save the PATH where this code is running for later usage
 # Consider using os.getcwd() instead. -Kuba
+PATH = os.getcwd()
 
 with open(f'{PATH}\settings.json') as f: # Read the file settings file
     settings = json.load(f)
