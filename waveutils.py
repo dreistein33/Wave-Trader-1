@@ -25,22 +25,26 @@ class WaveEngine:
         self.stop_loss = self.content['stop_loss']
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
+        self.buy_on_avg = self.content['buy_on_average']
 
     def get_prices(self):
         ticker_data = self.client.get_ticker(symbol=self.symbol)
-        ticker_daily_avg = ticker_data['weightedAvgPrice']
-        sell_profit = ticker_daily_avg * self.sell_multiplier
-        sell_loss = ticker_daily_avg * self.loss_multiplier
-
+        if self.buy_on_avg:
+            buy_price = ticker_data['weightedAvgPrice']
+            sell_profit = buy_price * self.sell_multiplier
+            sell_loss = buy_price * self.loss_multiplier
+        else:
+            buy_price = float(input("ENTER PRICE >> "))  # Couldn't come up with better solution, gonna change it later.
+            sell_profit = buy_price * self.sell_multiplier
+            sell_loss = buy_price * self.loss_multiplier
         return sell_profit, sell_loss
 
     def get_klines(self):
         klines = self.client.get_historical_klines("ETHBTC", Client.KLINE_INTERVAL_30MINUTE, "1 Dec, 2017", "1 Jan, 2018")
-        days = [time.ctime(x[0]) for x in klines]
+        days = [time.ctime(x[0]/1000) for x in klines]
         volumes = [x[5] for x in klines]
 
-        return days
-
+        return days, volumes
 
 
 
