@@ -58,10 +58,3 @@ class WaveEngine:
         volumes = [x[5] for x in klines]
 
         return days, volumes
-
-
-
-
-
-
-
