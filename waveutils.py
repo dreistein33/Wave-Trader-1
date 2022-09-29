@@ -8,6 +8,13 @@ from binance import Client
 
 from mathutils import convert_percent_to_mul
 
+# So I'm thinking about separating the tasks in three classes.
+# First one stores the user data
+# Second one manipulates the data
+# Third one observes the market.
+# I need to make those classes
+# And make them exchange information.
+
 
 # Actually gonna create separate class to store all the data from configuration
 # because it seemed to me like too much is going on in one class.
