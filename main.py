@@ -6,6 +6,7 @@ from binance import Client, ThreadedWebsocketManager, ThreadedDepthCacheManager
 from colorama import Fore, Back, Style
 from apscheduler.schedulers.blocking import BlockingScheduler
 import json
+import dump_alert
 
 from waveutils import WaveEngine
 
@@ -97,6 +98,7 @@ def price():
 
 generate_new_average()
 price()
+dump_alert()
 
 # scheduler is a cool way to run fuctions in x time, here it's used to update the avg prices in x time, so the bot keeps working
 # with recent metrics, it's probably generating new averages every 6 hours
