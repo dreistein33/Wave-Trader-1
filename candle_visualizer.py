@@ -8,10 +8,10 @@ import yfinance as yf
 
 app = QApplication([])
 win = QGraphicsView()
-win.setWindowTitle('TradingView wannabe')
+win.setWindowTitle('Candle Visualizer')
 layout = QGridLayout()
 win.setLayout(layout)
-win.resize(600, 500)
+win.resize(1000, 500)
 
 combo = QComboBox()
 combo.setEditable(True)
@@ -20,7 +20,7 @@ layout.addWidget(combo, 0, 0, 1, 1)
 info = QLabel()
 layout.addWidget(info, 0, 1, 1, 1)
 
-ax = fplt.create_plot(init_zoom_periods=100)
+ax = fplt.create_plot(init_zoom_periods=10)
 win.axs = [ax] # finplot requres this property
 axo = ax.overlay()
 layout.addWidget(ax.vb.win, 1, 0, 1, 2)
@@ -28,7 +28,7 @@ layout.addWidget(ax.vb.win, 1, 0, 1, 2)
 
 @lru_cache(maxsize=15)
 def download(symbol):
-    return yf.download(symbol, '2019-01-01')
+    return yf.download(symbol, '2022-01-01')
 
 @lru_cache(maxsize=100)
 def get_name(symbol):
