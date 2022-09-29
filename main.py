@@ -43,16 +43,23 @@ def filter_parameters():
         buy_price_f = abs((sell_percentage/2)/100 - 1.0)
     return sell_percentage_f, buy_price_f, stop_loss_price_f
 
+x, y, z = filter_parameters()
+print(x, y, z)
+
 
 def generate_new_average(): # A function that returns the informations about the coin selected, everytime it's called, it gets the new metrics and calculates the avg prices
     global ticker_avg, sell_price, buy_price, stop_loss_price
     sell_percentage_f, buy_price_f, stop_loss_price_f = filter_parameters()
     tickers = client.get_ticker(symbol=symbol)
+    print(tickers)
     ticker_avg = tickers['weightedAvgPrice']
     sell_price = float(ticker_avg)* sell_percentage_f
     buy_price = float(ticker_avg)* buy_price_f
     stop_loss_price =  buy_price * stop_loss_price_f
-
+    print(f'TICKER AVG {ticker_avg}')
+    print(f'SELL PRICE {sell_price}')
+    print(f'BUY PRICE {buy_price}')
+    print(f'STOP LOSS PRICE {stop_loss_price}')
 
 def print_data():
     os.system('cls')
