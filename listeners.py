@@ -16,6 +16,7 @@ class WaveListener:
             else:
                 reached_target = True
                 break
+            time.sleep(10)
         return reached_target
 
     @classmethod
