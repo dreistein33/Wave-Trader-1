@@ -8,6 +8,7 @@ PATHold = str(os.path.abspath(__file__)).replace("main.py", "")  # Save the PATH
 bitcoin = [1]
 ethereum = [1]
 
+
 def alert_bitcoin():
     bitcoin_price = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT")  
     bitcoin_price = bitcoin_price.json()

@@ -50,7 +50,7 @@ class WaveEngine:
             buy_price = float(input("ENTER PRICE >> "))  # Couldn't come up with better solution, gonna change it later.
             sell_profit = buy_price * self.reader.sell_multiplier
             sell_loss = buy_price * self.reader.loss_multiplier
-        return sell_profit, sell_loss
+        return buy_price, sell_profit, sell_loss
 
     def get_klines(self):
         klines = self.client.get_historical_klines("ETHBTC", Client.KLINE_INTERVAL_30MINUTE, "1 Dec, 2017", "1 Jan, 2018")
@@ -58,3 +58,42 @@ class WaveEngine:
         volumes = [x[5] for x in klines]
 
         return days, volumes
+
+    def compare_prices(self):
+        current_price = self.client.get_symbol_ticker(self.reader.symbol)
+        buy_price, *_ = self.get_prices()
+        if current_price > buy_price:
+            assume_buy = False
+        else:
+            assume_buy = True
+        return assume_buy, buy_price
+
+    def display_if_buy(self):
+        assume_buy = self.compare_prices()
+        if assume_buy:
+            print('The transaction is going to be realised.')
+        else:
+            print('The transaction is going to be aborted.')
+
+    def place_order_limit_buy(self, qty=1):
+        """This is just a demo to show how would placing order work"""
+        assume_buy, buy_price = self.compare_prices()
+        if assume_buy:
+            self.client.order_limit_buy(
+                symbol=self.reader.symbol,
+                quantity=qty,
+                price=buy_price
+            )
+        else:
+            self.wait_for_better_price()
+            self.client.order_limit_buy(
+                symbol=self.reader.symbol,
+                quantity=qty,
+                price=buy_price
+            )
+
+    def wait_for_better_price(self, assume_buy=False):
+        while not assume_buy:
+            assume_buy, _ = self.compare_prices()  # Gotta refactor to get rid of using redundant variables.
+            time.sleep(5)
+

@@ -44,6 +44,7 @@ def filter_parameters():
         buy_price_f = abs((sell_percentage/2)/100 - 1.0)
     return sell_percentage_f, buy_price_f, stop_loss_price_f
 
+
 x, y, z = filter_parameters()
 print(x, y, z)
 
@@ -61,6 +62,7 @@ def generate_new_average(): # A function that returns the informations about the
     print(f'SELL PRICE {sell_price}')
     print(f'BUY PRICE {buy_price}')
     print(f'STOP LOSS PRICE {stop_loss_price}')
+
 
 def print_data():
     os.system('cls')
