@@ -97,3 +97,6 @@ class WaveEngine:
             assume_buy, _ = self.compare_prices()  # Gotta refactor to get rid of using redundant variables.
             time.sleep(5)
 
+# TODO
+# make another file and create bunch of listeners to use here
+
