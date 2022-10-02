@@ -1,7 +1,7 @@
 import requests
 import time
 
-from constants import INTERVALS
+from utils.constants import INTERVALS
 
 
 class WaveListener:

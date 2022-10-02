@@ -8,7 +8,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 import json
 import dump_alert
 
-from waveutils import WaveEngine
+from utils.waveutils import WaveEngine
 
 PATHold = str(os.path.abspath(__file__)).replace("main.py", "")  # Save the PATH where this code is running for later usage
 # Consider using os.getcwd() instead. -Kuba
