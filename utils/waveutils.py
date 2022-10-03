@@ -5,9 +5,10 @@ import requests
 import time
 import threading
 
+from apscheduler.schedulers.blocking import BlockingScheduler
 from binance import Client
 
-from mathutils import convert_percent_to_mul
+from mathutils import convert_percent_to_mul, calculate_quantity
 
 # So I'm thinking about separating the tasks in three classes.
 # First one stores the user data
@@ -32,6 +33,7 @@ class SettingsReader:
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
         self.buy_on_avg = self.content['buy_on_average']
+        self.dca_interval = self.content['dca_interval'].lower()
 
 
 class WaveEngine:
@@ -52,6 +54,8 @@ class WaveEngine:
         if content != self.reader.content:
             self.update_setting()
 
+    def get_current_price(self):
+        return self.client.get_symbol_ticker(self.reader.symbol)
 
     def get_prices(self):
         ticker_data = self.client.get_ticker(symbol=self.reader.symbol)
@@ -109,6 +113,23 @@ class WaveEngine:
         while not assume_buy:
             assume_buy, _ = self.compare_prices()  # Gotta refactor to get rid of using redundant variables.
             time.sleep(5)
+
+    def dca_strategy(self, balance):
+        sched = BlockingScheduler()
+        price = self.get_current_price()
+        quantity = calculate_quantity(price, balance)
+        if self.reader.dca_interval == 'monthly':
+            sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
+                          day='1st fri')
+        elif self.reader.dca_interval == 'daily':
+            sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
+                          hour='12')
+        elif self.reader.dca_interval == 'weekly':
+            sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
+                          day_of_week='fri', hour='12')
+        else:
+            raise Exception("Invalid configuration in settings.json, options: daily, weekly, monthly")
+        sched.start()
 
 
 if __name__ == "__main__":
