@@ -7,9 +7,9 @@ import threading
 
 from apscheduler.schedulers.blocking import BlockingScheduler
 from binance import Client
+from pathlib import Path
 
 from mathutils import convert_percent_to_mul, calculate_quantity
-
 # So I'm thinking about separating the tasks in three classes.
 # First one stores the user data
 # Second one manipulates the data
@@ -17,13 +17,16 @@ from mathutils import convert_percent_to_mul, calculate_quantity
 # I need to make those classes
 # And make them exchange information.
 
+CONFIG_PATH = f"{Path(os.path.dirname(__file__)).parent}/settings.json"
+ENV_PATH = f"{Path(os.path.dirname(__file__)).parent}/.env"
 
-# Actually gonna create separate class to store all the data from configuration
+
+# Actually going to create separate class to store all the data from configuration
 # because it seemed to me like too much is going on in one class.
 class SettingsReader:
 
     def __init__(self):
-        self.conf_path = f'{os.path.dirname(os.getcwd())}/settings.json'
+        self.conf_path = CONFIG_PATH
 
         with open(self.conf_path, 'r') as f:
             self.content = json.load(f)
@@ -38,7 +41,7 @@ class SettingsReader:
 
 class WaveEngine:
 
-    def __init__(self, envpath=f'{os.path.dirname(os.getcwd())}/.env'):
+    def __init__(self, envpath=ENV_PATH):
         self.reader = SettingsReader()
         self.PUBKEY = dotenv.dotenv_values(envpath)['PUBLICKEY']
         self.PRIVKEY = dotenv.dotenv_values(envpath)['PRIVKEY']
