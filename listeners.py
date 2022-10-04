@@ -31,10 +31,10 @@ def get_moving_average(symbol, interval, n):
     candles = get_candle_data(symbol, interval, n)
     # Use index 4 because Binance api provides data in lists
     # And the close price is actually placed at index four.
-    if candles:
+    if len(candles) == n:
         close_prices = [float(x[4]) for x in candles]
         summed_prices = sum(close_prices)
         average = summed_prices / len(close_prices)
+        return average
     else:
-        return
-    return average
+        return 0
