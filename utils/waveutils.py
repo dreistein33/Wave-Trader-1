@@ -105,6 +105,7 @@ class WaveEngine:
                 quantity=qty,
                 price=buy_price
             )
+        # This should return orderId or something like this.
 
     def wait_for_better_price(self, assume_buy=False):
         while not assume_buy:

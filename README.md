@@ -18,7 +18,7 @@ pip install plotly
 # Objectives and To-Do List
 - [X] Read a cryptocurrency informations and filter average prices
 - [X] Put all depencies in a requirements.txt. (pip freeze > requirements.txt)
-- [ ] Create a easy settings file and a reader of thoses informations to be used inside the main.py
+- [X] Create a easy settings file and a reader of thoses informations to be used inside the main.py
 - [ ] Automatically calculate the best sell percentage price (optional usage)
 - [ ] A average stabilizer to deal with price dumping
 - [ ] A average stabilizer to deal with price bump
