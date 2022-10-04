@@ -28,7 +28,7 @@ def get_candle_data(symbol, interval, limit=100, alert_at='5%'):
 
 
 def get_moving_average(symbol, interval, n):
-    """This method calculates MA(n)"""
+    """This method calculates MA of n period."""
     candles = get_candle_data(symbol, interval, n)
     # Use index 4 because Binance api provides data in lists
     # And the close price is actually placed at index four.
@@ -38,10 +38,11 @@ def get_moving_average(symbol, interval, n):
         average = summed_prices / len(close_prices)
         return average
     else:
-        return 0
+        return None
 
 
 def get_rsi(symbol, n, interval='1d'):
+    """This method calculates RSI of n period."""
     candles = get_candle_data(symbol, interval, n)
     if len(candles) == n:
         close_prices = [float(x[4]) for x in candles]
@@ -61,7 +62,28 @@ def get_rsi(symbol, n, interval='1d'):
         rsi = 100 - 100 / (1 + rs)
         return rsi
     else:
-        return 0
+        return None
+
+
+def get_ema(symbol, interval, n):
+    # ema = price(today) * k + ema(yesterday) * (1 - k)
+    k = 2 / (n + 1)
+    pass
+
+
+class Ema:
+    def __init__(self, symbol, interval, n):
+        self.symbol = symbol
+        self.n = n
+        self.k = 2 / (n + 1)
+        self.prev_ema = get_moving_average(symbol, interval, n)
+
+    def calculate_ema(self):
+        response = requests.get(f"https://api.binance.com/api/v3/ticker/price?symbol={self.symbol}").json()
+        current_price = float(response['price'])
+        ema = self.k * (current_price - self.prev_ema) + self.prev_ema
+        self.prev_ema = ema
+        return ema
 
 
 # if __name__ == '__main__':
