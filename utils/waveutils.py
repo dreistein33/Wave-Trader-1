@@ -24,27 +24,21 @@ ENV_PATH = f"{Path(os.path.dirname(__file__)).parent}/.env"
 # Actually going to create separate class to store all the data from configuration
 # because it seemed to me like too much is going on in one class.
 class SettingsReader:
-
+    # Automatic constructor out of json file, so I don't have to hardcode this.
     def __init__(self):
-        self.conf_path = CONFIG_PATH
-
-        with open(self.conf_path, 'r') as f:
+        with open(CONFIG_PATH, 'r') as f:
             self.content = json.load(f)
-        self.symbol = self.content['symbol']
-        self.sell_ptg = self.content['sell_percentage']
-        self.stop_loss = self.content['stop_loss']
+        self.__dict__ = self.content
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
-        self.buy_on_avg = self.content['buy_on_average']
-        self.dca_interval = self.content['dca_interval'].lower()
 
 
 class WaveEngine:
 
-    def __init__(self, envpath=ENV_PATH):
+    def __init__(self):
         self.reader = SettingsReader()
-        self.PUBKEY = dotenv.dotenv_values(envpath)['PUBLICKEY']
-        self.PRIVKEY = dotenv.dotenv_values(envpath)['PRIVKEY']
+        self.PUBKEY = dotenv.dotenv_values(ENV_PATH)['PUBLICKEY']
+        self.PRIVKEY = dotenv.dotenv_values(ENV_PATH)['PRIVKEY']
         self.client = Client(self.PUBKEY, self.PRIVKEY)
 
     def update_setting(self):
@@ -52,9 +46,9 @@ class WaveEngine:
         assert self.reader
 
     def check_for_change_in_config(self):
-        with open(self.reader.conf_path) as f:
+        with open(CONFIG_PATH) as f:
             content = json.load(f)
-        if content != self.reader.content:
+        if content != self.reader.__dict__:
             self.update_setting()
 
     def get_current_price(self):
