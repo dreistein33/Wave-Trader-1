@@ -1,3 +1,4 @@
+import dotenv
 import requests
 import time
 
@@ -84,6 +85,41 @@ class Ema:
         ema = self.k * (current_price - self.prev_ema) + self.prev_ema
         self.prev_ema = ema
         return ema
+
+
+# The way of using this class is simple
+# Create instance of an object class
+# The object is bound to one market pair e.g. BTC/USDT
+# Happily read the indicators!
+# Big win =]
+class Indicator:
+    def __init__(self, market, timeframe, period):
+        self.market = market
+        self.timeframe = timeframe
+        self.period = period
+        self.headers = {
+            'X-RapidAPI-Key': dotenv.dotenv_values('.env')['RAPIDAPI'],
+            'X-RapidAPI-Host': 'crypto-indicators-rest.p.rapidapi.com'
+        }
+        # This api seems to work well.
+        # There are plenty of indicators,
+        # Which may be helpful to users.
+        # Limit - 2000 requests per month for free.
+        # I will add all available indicators ASAP.
+        self.url = "https://crypto-indicators-rest.p.rapidapi.com/"
+
+    def rsi(self):
+        url = self.url + "rsi"
+        data = {
+            'market': self.market,
+            'timeframe': self.timeframe,
+            'period': self.period
+        }
+        response = requests.get(url, headers=self.headers, params=data).json()
+        if response.status_code == 200:
+            return response
+        else:
+            return None
 
 
 # if __name__ == '__main__':
