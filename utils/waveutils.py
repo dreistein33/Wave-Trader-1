@@ -9,7 +9,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from binance import Client
 from pathlib import Path
 
-from mathutils import convert_percent_to_mul, calculate_quantity
+from .mathutils import convert_percent_to_mul, calculate_quantity
 # So I'm thinking about separating the tasks in three classes.
 # First one stores the user data
 # Second one manipulates the data
@@ -29,6 +29,7 @@ class SettingsReader:
         with open(CONFIG_PATH, 'r') as f:
             self.content = json.load(f)
         self.__dict__ = self.content
+        self.symbol = self.symbol.replace('/', '')
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
 
@@ -130,14 +131,14 @@ class WaveEngine:
         sched.start()
 
 
-if __name__ == "__main__":
-    # I was checking if making changes in settings during the script's work would work.
-    # EDIT: IT worked.
-    eng = WaveEngine()
-    while True:
-        x = eng.get_klines()
-        thread_s = threading.Thread(target=eng.check_for_change_in_config)
-        thread_s.start()
-        print(x)
-        time.sleep(10)
+# if __name__ == "__main__":
+#     # I was checking if making changes in settings during the script's work would work.
+#     # EDIT: IT worked.
+#     eng = WaveEngine()
+#     while True:
+#         x = eng.get_klines()
+#         thread_s = threading.Thread(target=eng.check_for_change_in_config)
+#         thread_s.start()
+#         print(x)
+#         time.sleep(10)
 
