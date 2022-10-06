@@ -2,6 +2,7 @@ import dotenv
 import requests
 import time
 
+from handlers.inderrhandler import handle_status_code, handle_log
 from utils.constants import INTERVALS
 from utils.mathutils import calculate_price_difference
 
@@ -117,6 +118,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def stochastic_rsi(self,
@@ -138,6 +140,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def macd(self,
@@ -161,6 +164,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def adx(self, timeframe='1d', period=14):
@@ -174,6 +178,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def atr(self, timeframe='1d', period=14):
@@ -187,6 +192,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def awesome_oscillator(self, timeframe='1d', fastperiod=5, slowperiod=34):
@@ -201,6 +207,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def bollinger_bands(self, timeframe='1d', period=14):
@@ -214,6 +221,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def cci(self, timeframe='1d', period=20):
@@ -227,6 +235,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def force_index(self, timeframe='1d', period=1):
@@ -240,6 +249,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def kst(self,
@@ -271,6 +281,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def money_flow_index(self, timeframe='1d', period=14):
@@ -284,6 +295,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def on_balance_volume(self, timeframe='1d'):
@@ -296,6 +308,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def parabolic_stop_and_reverse(self, timeframe='1d', step=0.2, max_=0.2):
@@ -310,6 +323,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def sma(self, timeframe='1d', period=9):
@@ -323,6 +337,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def stochastic_oscillator(self, timeframe='1d', period=14, signalperiod=3):
@@ -337,6 +352,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def trix(self, timeframe='1d', period=18):
@@ -350,6 +366,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def volume_profile(self, timeframe='1d', nofbars=14):
@@ -363,6 +380,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def ema(self, timeframe='1d', period=9):
@@ -376,6 +394,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def wma(self, timeframe='1d', period=9):
@@ -389,6 +408,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def wema(self, timeframe='1d', period=7):
@@ -402,6 +422,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def williams_r(self, timeframe='1d', period=14):
@@ -415,6 +436,7 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
     def ichimoku_cloud(self,
@@ -436,8 +458,10 @@ class Indicator:
         if response.status_code == 200:
             return response.json()
         else:
+            handle_status_code(response)
             return None
 
-# if __name__ == '__main__':
-#     x = get_rsi('BTCUSDT', 24, interval='15m')
-#     print(x)
+
+if __name__ == '__main__':
+    pass
+
