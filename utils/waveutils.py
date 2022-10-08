@@ -117,13 +117,14 @@ class WaveEngine:
         sched = BlockingScheduler()
         price = self.get_current_price()
         quantity = calculate_quantity(price, balance)
-        if self.reader.dca_interval == 'monthly':
+        interval = self.reader.dca_interval.lower()
+        if interval == 'monthly':
             sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
                           day='1st fri')
-        elif self.reader.dca_interval == 'daily':
+        elif interval == 'daily':
             sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
                           hour='12')
-        elif self.reader.dca_interval == 'weekly':
+        elif interval == 'weekly':
             sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
                           day_of_week='fri', hour='12')
         else:

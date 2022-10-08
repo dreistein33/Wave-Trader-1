@@ -28,8 +28,3 @@ def handle_status_code(response):
         return "SERVER ERROR!"
     else:
         return "UNKNOWN ERROR!"
-
-
-
-
-
