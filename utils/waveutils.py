@@ -17,8 +17,14 @@ from .mathutils import convert_percent_to_mul, calculate_quantity
 # I need to make those classes
 # And make them exchange information.
 
-CONFIG_PATH = f"{Path(os.path.dirname(__file__)).parent}/settings.json"
-ENV_PATH = f"{Path(os.path.dirname(__file__)).parent}/.env"
+PARENT_PATH = Path(os.path.dirname(__file__)).parent
+CONFIG_PATH = f"{PARENT_PATH}/settings.json"
+ENV_PATH = f"{PARENT_PATH}/.env"
+
+
+def save_price(price):
+    with open(f'{PARENT_PATH}/price.txt', 'w') as f:
+        f.write(str(price))
 
 
 # Actually going to create separate class to store all the data from configuration
@@ -29,6 +35,7 @@ class SettingsReader:
         with open(CONFIG_PATH, 'r') as f:
             self.content = json.load(f)
         self.__dict__ = self.content
+        # Convert IndicatorAPI symbol pattern to BinanceAPI pattern.
         self.symbol = self.symbol.replace('/', '')
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
