@@ -22,9 +22,17 @@ CONFIG_PATH = f"{PARENT_PATH}/settings.json"
 ENV_PATH = f"{PARENT_PATH}/.env"
 
 
-def save_price(price):
-    with open(f'{PARENT_PATH}/price.txt', 'w') as f:
-        f.write(str(price))
+def save_price(price, symbol):  # or take dict as an argument, IDK what's better tbh
+    assert price > 0
+    assert isinstance(symbol, str)
+    content = {symbol: price}
+    with open(f'{PARENT_PATH}/price.json', 'w') as f:
+        json.dump(content, f)
+
+
+def read_price():
+    with open(f'{PARENT_PATH}/price.json') as f:
+        return json.load(f)
 
 
 # Actually going to create separate class to store all the data from configuration
@@ -125,6 +133,7 @@ class WaveEngine:
         price = self.get_current_price()
         quantity = calculate_quantity(price, balance)
         interval = self.reader.dca_interval.lower()
+        # Please implement switch case
         if interval == 'monthly':
             sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
                           day='1st fri')
@@ -137,6 +146,17 @@ class WaveEngine:
         else:
             raise Exception("Invalid configuration in settings.json, options: daily, weekly, monthly")
         sched.start()
+
+    def get_min_and_max_price(self, symbol):
+        """Get minimum and maximum price that binance allow to place an order at the moment."""
+        symbol = symbol.upper()
+        current_price = float(self.client.get_symbol_ticker(symbol=symbol)['price'])
+        filters = self.client.get_symbol_info(symbol)['filters']
+        for items in filters:
+            if items['filterType'] == 'PERCENT_PRICE':
+                max_price = current_price * float(items['multiplierUp'])
+                min_price = current_price * float(items['multiplierDown'])
+                return max_price, min_price
 
 
 # if __name__ == "__main__":
