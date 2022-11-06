@@ -23,6 +23,7 @@ ENV_PATH = f"{PARENT_PATH}/.env"
 
 
 def save_price(price, symbol):  # or take dict as an argument, IDK what's better tbh
+    """This function is needed to remember the last price bought so the script can calculate percentage change."""
     assert price > 0
     assert isinstance(symbol, str)
     content = {symbol: price}
@@ -157,6 +158,8 @@ class WaveEngine:
                 max_price = current_price * float(items['multiplierUp'])
                 min_price = current_price * float(items['multiplierDown'])
                 return max_price, min_price
+            else:
+                return
 
 
 # if __name__ == "__main__":
