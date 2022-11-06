@@ -8,7 +8,8 @@ SCHEME OF WORK:
 2) Set the starting price -> $20000
 3) Set the balance -> $200
 4) Set number of entries -> 5 entries = $200 / 5 = $40 per entry/order
-5)    
+5) If price drops x% -> place new buy order
+6) If price pumps x% -> place new sell order equivalent to % specified in --sell-assets argument.   
 """
 
 parser = argparse.ArgumentParser(
