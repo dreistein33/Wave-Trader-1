@@ -6,7 +6,7 @@ import time
 import threading
 
 from apscheduler.schedulers.blocking import BlockingScheduler
-from binance import Client
+from binance import Client, ThreadedWebsocketManager
 from pathlib import Path
 
 from .mathutils import convert_percent_to_mul, calculate_quantity
@@ -17,8 +17,23 @@ from .mathutils import convert_percent_to_mul, calculate_quantity
 # I need to make those classes
 # And make them exchange information.
 
-CONFIG_PATH = f"{Path(os.path.dirname(__file__)).parent}/settings.json"
-ENV_PATH = f"{Path(os.path.dirname(__file__)).parent}/.env"
+PARENT_PATH = Path(os.path.dirname(__file__)).parent
+CONFIG_PATH = f"{PARENT_PATH}/settings.json"
+ENV_PATH = f"{PARENT_PATH}/.env"
+
+
+def save_price(price, symbol):  # or take dict as an argument, IDK what's better tbh
+    """This function is needed to remember the last price bought so the script can calculate percentage change."""
+    assert price > 0
+    assert isinstance(symbol, str)
+    content = {symbol: price}
+    with open(f'{PARENT_PATH}/price.json', 'w') as f:
+        json.dump(content, f)
+
+
+def read_price():
+    with open(f'{PARENT_PATH}/price.json') as f:
+        return json.load(f)
 
 
 # Actually going to create separate class to store all the data from configuration
@@ -29,17 +44,23 @@ class SettingsReader:
         with open(CONFIG_PATH, 'r') as f:
             self.content = json.load(f)
         self.__dict__ = self.content
+        # Convert IndicatorAPI symbol pattern to BinanceAPI pattern.
         self.symbol = self.symbol.replace('/', '')
         self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
 
 
-class WaveEngine:
-
+class Keys:
     def __init__(self):
-        self.reader = SettingsReader()
         self.PUBKEY = dotenv.dotenv_values(ENV_PATH)['PUBLICKEY']
         self.PRIVKEY = dotenv.dotenv_values(ENV_PATH)['PRIVKEY']
+
+
+class WaveEngine(Keys):
+
+    def __init__(self):
+        super().__init__()
+        self.reader = SettingsReader()
         self.client = Client(self.PUBKEY, self.PRIVKEY)
 
     def update_setting(self):
@@ -118,6 +139,7 @@ class WaveEngine:
         price = self.get_current_price()
         quantity = calculate_quantity(price, balance)
         interval = self.reader.dca_interval.lower()
+        # Please implement switch case
         if interval == 'monthly':
             sched.add_job(self.client.order_limit_buy, args=[self.reader.symbol, quantity, price], trigger='cron',
                           day='1st fri')
@@ -130,6 +152,48 @@ class WaveEngine:
         else:
             raise Exception("Invalid configuration in settings.json, options: daily, weekly, monthly")
         sched.start()
+
+    def get_min_and_max_price(self, symbol):
+        """Get minimum and maximum price that binance allow to place an order at the moment."""
+        symbol = symbol.upper()
+        current_price = float(self.client.get_symbol_ticker(symbol=symbol)['price'])
+        filters = self.client.get_symbol_info(symbol)['filters']
+        for items in filters:
+            if items['filterType'] == 'PERCENT_PRICE':
+                max_price = current_price * float(items['multiplierUp'])
+                min_price = current_price * float(items['multiplierDown'])
+                return max_price, min_price
+            else:
+                return
+
+    def calculate_quantity_for_given_balance(self, symbol, balance):
+        current_price = float(self.client.get_symbol_ticker(symbol=symbol)['price'])
+        return current_price / balance
+
+    def place_buy_order_with_market_price(self, symbol, quantity):
+        order = self.client.order_market_buy(symbol=symbol, quantity=quantity)
+        return order
+
+    def place_sell_order_with_market_price(self, symbol, quantity):
+        order = self.client.order_market_sell(symbol=symbol, quantity=quantity)
+        return order
+
+    def place_buy_limit_order(self, symbol, quantity, price):
+        order = self.client.order_limit_buy(symbol=symbol, quantity=quantity, price=price)
+        return order
+
+    def place_sell_limit_order(self, symbol, quantity, price):
+        order = self.client.order_market_sell(symbol=symbol, quantity=quantity, price=price)
+        return order
+
+
+class WebsocketManager(Keys):
+    def __init__(self):
+        super().__init__()
+        self.twm = ThreadedWebsocketManager(self.PUBKEY, self.PRIVKEY)
+
+    def get_symbol_info(self, symbol):
+        pass
 
 
 # if __name__ == "__main__":
