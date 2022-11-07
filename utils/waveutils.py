@@ -6,7 +6,7 @@ import time
 import threading
 
 from apscheduler.schedulers.blocking import BlockingScheduler
-from binance import Client
+from binance import Client, ThreadedWebsocketManager
 from pathlib import Path
 
 from .mathutils import convert_percent_to_mul, calculate_quantity
@@ -50,12 +50,17 @@ class SettingsReader:
         self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
 
 
-class WaveEngine:
-
+class Keys:
     def __init__(self):
-        self.reader = SettingsReader()
         self.PUBKEY = dotenv.dotenv_values(ENV_PATH)['PUBLICKEY']
         self.PRIVKEY = dotenv.dotenv_values(ENV_PATH)['PRIVKEY']
+
+
+class WaveEngine(Keys):
+
+    def __init__(self):
+        super().__init__()
+        self.reader = SettingsReader()
         self.client = Client(self.PUBKEY, self.PRIVKEY)
 
     def update_setting(self):
@@ -160,6 +165,35 @@ class WaveEngine:
                 return max_price, min_price
             else:
                 return
+
+    def calculate_quantity_for_given_balance(self, symbol, balance):
+        current_price = float(self.client.get_symbol_ticker(symbol=symbol)['price'])
+        return current_price / balance
+
+    def place_buy_order_with_market_price(self, symbol, quantity):
+        order = self.client.order_market_buy(symbol=symbol, quantity=quantity)
+        return order
+
+    def place_sell_order_with_market_price(self, symbol, quantity):
+        order = self.client.order_market_sell(symbol=symbol, quantity=quantity)
+        return order
+
+    def place_buy_limit_order(self, symbol, quantity, price):
+        order = self.client.order_limit_buy(symbol=symbol, quantity=quantity, price=price)
+        return order
+
+    def place_sell_limit_order(self, symbol, quantity, price):
+        order = self.client.order_market_sell(symbol=symbol, quantity=quantity, price=price)
+        return order
+
+
+class WebsocketManager(Keys):
+    def __init__(self):
+        super().__init__()
+        self.twm = ThreadedWebsocketManager(self.PUBKEY, self.PRIVKEY)
+
+    def get_symbol_info(self, symbol):
+        pass
 
 
 # if __name__ == "__main__":
