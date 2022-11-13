@@ -26,3 +26,19 @@ parser.add_argument('-sa', '--sell-assets', type=float, help='Specify how much p
                                                              'eg. -sa 50 -> current profit = $250 -> sell amount of coins equivalent to $125.')
 
 
+"""
+PSEUDO CODE LOOP
+1) Check if work has been stopped
+2) If so, observe the market and analyze if we're on profit or loss
+3) If not, create new market buy order
+4) Wait for the price to change 
+5) If price raises by set percentage, sell amount specified in settings
+7) Wait for the price to go back to starting price
+8) Repeat
+6) If price hits lower threshold, create another market buy order
+7) Wait for the price to reach demanded value
+8) Sell
+9) Back to point no. 7
+"""
+if __name__ == '__main__':
+    pass
