@@ -41,4 +41,4 @@ PSEUDO CODE LOOP
 9) Back to point no. 7
 """
 if __name__ == '__main__':
-    pass
+    print("THIS IS A SUBPROCESS!")
