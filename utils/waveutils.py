@@ -44,10 +44,11 @@ class SettingsReader:
         with open(CONFIG_PATH, 'r') as f:
             self.content = json.load(f)
         self.__dict__ = self.content
+        assert self.__dict__ is not {}
         # Convert IndicatorAPI symbol pattern to BinanceAPI pattern.
         self.symbol = self.symbol.replace('/', '')
-        self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
-        self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
+        # self.sell_multiplier = convert_percent_to_mul(self.sell_ptg, loss=False)
+        # self.loss_multiplier = convert_percent_to_mul(self.stop_loss)
 
 
 class Keys:
@@ -166,16 +167,16 @@ class WaveEngine(Keys):
             else:
                 return
 
-    def calculate_quantity_for_given_balance(self, symbol, balance):
-        current_price = float(self.client.get_symbol_ticker(symbol=symbol)['price'])
+    def calculate_quantity_for_given_balance(self, balance):
+        current_price = float(self.client.get_symbol_ticker(symbol=self.reader.symbol)['price'])
         return current_price / balance
 
-    def place_buy_order_with_market_price(self, symbol, quantity):
-        order = self.client.order_market_buy(symbol=symbol, quantity=quantity)
+    def place_buy_order_with_market_price(self, quantity):
+        order = self.client.order_market_buy(symbol=self.reader.symbol, quantity=quantity)
         return order
 
-    def place_sell_order_with_market_price(self, symbol, quantity):
-        order = self.client.order_market_sell(symbol=symbol, quantity=quantity)
+    def place_sell_order_with_market_price(self, quantity):
+        order = self.client.order_market_sell(symbol=self.reader.symbol, quantity=quantity)
         return order
 
     def place_buy_limit_order(self, symbol, quantity, price):

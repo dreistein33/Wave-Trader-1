@@ -25,7 +25,7 @@ parser.add_argument('-lp', '--loss-percentage', type=float, help='Specify thresh
 parser.add_argument('-sa', '--sell-assets', type=float, help='Specify how much percent of assets bought is going to be sold when hit the profit threshold,'
                                                              'eg. -sa 50 -> current profit = $250 -> sell amount of coins equivalent to $125.')
 
-
+args = parser.parse_args()
 """
 PSEUDO CODE LOOP
 1) Check if work has been stopped
@@ -42,3 +42,4 @@ PSEUDO CODE LOOP
 """
 if __name__ == '__main__':
     print("THIS IS A SUBPROCESS!")
+    print(args)
