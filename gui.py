@@ -87,7 +87,7 @@ class Window(QMainWindow):
         self.line4 = self.create_textbox('STARTING PRICE (20000)', 20, 90, 180, 90)
         self.line5 = self.create_textbox('PROFIT PERCENTAGE (%)', 20, 110, 180, 110)
         self.line6 = self.create_textbox('LOSS PERCENTAGE (%)', 20, 130, 180, 130)
-        self.line7 = self.create_textbox('ASSETS TO REALIZE (%)', 20, 150, 180, 150)
+        self.line7 = self.create_textbox('NEW THRESHOLD (%)', 20, 150, 180, 150)
         self.run_button = QPushButton('SAVE', self)
         self.run_button.clicked.connect(self.save_settings)
         self.run_button.move(150, 200)
@@ -126,7 +126,7 @@ class Window(QMainWindow):
         starting_price = float(self.line4.text())
         profit_mul = float(self.line5.text()) / 100
         loss_mul = float(self.line6.text()) / 100
-        sell_assets_mul = float(self.line7.text()) / 100
+        new_threshold = float(self.line7.text()) / 100
         if self.dynamic_thresholds_cb.isChecked():
             buy_thresholds = generate_dynamic_buy_thresholds(starting_price, entries, loss_mul)
         else:
@@ -139,6 +139,7 @@ class Window(QMainWindow):
             'profit_mul': profit_mul,
             'loss_mul': loss_mul,
             'buy_thresholds': buy_thresholds,
+            'new_threshold': new_threshold
         }
 
         with open(CONFIG_PATH, 'w') as f:

@@ -113,7 +113,7 @@ if __name__ == '__main__':
                     print(f'[MARKET] Selling {items} {config.symbol} for ${current_price*items}.')
                     time.sleep(5)
                     config.entries += 1
-                    threshold_to_update = current_price * (1 - config.loss_mul)
+                    threshold_to_update = current_price * (1 - config.new_threshold)
                     config.buy_thresholds.append(threshold_to_update)
                     config.buy_thresholds = sorted(config.buy_thresholds, reverse=True)
                     config.update_config()
