@@ -83,13 +83,15 @@ if __name__ == '__main__':
     config = wave.SettingsReader()
     engine = wave.WaveEngine(config.symbol)
     balance_per_entry = config.balance / config.entries
+    print('=D WaveTrader is starting!')
     while True:
         # Get current price every single iteration of loop.
         current_price = engine.get_current_price()
+        print(f'[INFO] Current price of {config.symbol} is {current_price}.')
         # [+] BUY ORDER SECTION [+]
         if len(config.buy_thresholds) > 0:
             if current_price <= config.buy_thresholds[0]:
-                print(f'Buying {config.symbol} for {current_price}')
+                print(f'[MARKET] Buying {config.symbol} for {current_price}.')
                 new_order = engine.place_buy_order_with_market_price(balance_per_entry)
                 time.sleep(5)
                 add_order_info_to_csv(new_order)
@@ -108,6 +110,7 @@ if __name__ == '__main__':
             if not is_df_empty(orders_to_sell):
                 for items in orders_to_sell['origQty']:
                     engine.place_sell_order_with_market_price(items)
+                    print(f'[MARKET] Selling {items} {config.symbol} for ${current_price*items}.')
                     time.sleep(5)
                     config.entries += 1
                     threshold_to_update = current_price * (1 - config.loss_mul)
