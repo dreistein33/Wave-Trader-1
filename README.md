@@ -37,6 +37,6 @@ pip install plotly
 - pip install -r requirements.txt
 
 # Instruction of usage:
-- Run ```bash python gui.py``` in terminal -> You can save there your configuration settings regarding symbol, balance etc.
-- When you're done with setting the config file run ```bash python bot.py``` in terminal
+- Run ```python gui.py``` in terminal -> You can save there your configuration settings regarding symbol, balance etc.
+- When you're done with setting the config file run ```python bot.py``` in terminal
 - 
