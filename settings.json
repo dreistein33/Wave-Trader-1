@@ -1,11 +1,15 @@
 {
-  "public_api": "59TiI0TUVxJhan9cQbMslBLAV6S********************y01Ac2K6E7ZYenXNb2V",
-  "private_api": "FhUb4toY1lxUoNY3DlhP4IMXZo*****************UwWaNLfaSBQmrWsBFO8AJ",
-  "symbol": "ETH/USDT",
-  "sell_ptg": 3,
-  "stop_loss": 3,
-  "stop_if_bitcoin_eth_dump": false,
-  "buy_if_coin_bump": false,
-  "buy_on_avg": false,
-  "dca_interval": "Monthly"
+  "symbol": "BTCUSDT",
+  "starting_price": 20000.0,
+  "balance": 200.0,
+  "entries": 5,
+  "profit_mul": 0.05,
+  "loss_mul": 0.05,
+  "buy_thresholds": [
+    20000.0,
+    19000.0,
+    18050.0,
+    17147.5,
+    16290.125
+  ]
 }
