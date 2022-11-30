@@ -80,86 +80,40 @@ def is_df_empty(df):
 # balance_per_entry = args.balance / args.entries
 
 if __name__ == '__main__':
-    # config = wave.SettingsReader()
-    # engine = wave.WaveEngine(config.symbol)
-    # balance_per_entry = config.balance / config.entries
-    # while True:
-    #     # Get current price every single iteration of loop.
-    #     current_price = engine.get_current_price()
-    #     # [+] BUY ORDER SECTION [+]
-    #     if len(config.buy_thresholds) > 0:
-    #         if current_price <= config.buy_thresholds[0]:
-    #             print(f'Buying {config.symbol} for {current_price}')
-    #             new_order = engine.place_buy_order_with_market_price(balance_per_entry)
-    #             time.sleep(5)
-    #             add_order_info_to_csv(new_order)
-    #             config.entries -= 1
-    #             config.buy_thresholds.pop(0)
-    #             config.update_config()
-    #
-    #     # [-] SELL ORDER SECTION [-]
-    #     orders = load_order_data()
-    #     if orders is not None:
-    #         # Check if current price is equal or greater by x% than price in order
-    #         # Return only the orders where above condition is met
-    #         # Then remove those orders from the original dataframe
-    #         # And update the updated dataframe to the csv file
-    #         orders_to_sell = return_orders_on_profit(orders, config.profit_mul, current_price)
-    #         if not is_df_empty(orders_to_sell):
-    #             for items in orders_to_sell['origQty']:
-    #                 engine.place_sell_order_with_market_price(items)
-    #                 time.sleep(5)
-    #                 config.entries += 1
-    #                 threshold_to_update = current_price * (1 - config.loss_mul)
-    #                 config.buy_thresholds.append(threshold_to_update)
-    #                 config.buy_thresholds = sorted(config.buy_thresholds, reverse=True)
-    #                 config.update_config()
-    #             remove_order_info_from_csv(orders_to_sell.index)
-    #
-    #     time.sleep(10)
+    config = wave.SettingsReader()
+    engine = wave.WaveEngine(config.symbol)
+    balance_per_entry = config.balance / config.entries
+    while True:
+        # Get current price every single iteration of loop.
+        current_price = engine.get_current_price()
+        # [+] BUY ORDER SECTION [+]
+        if len(config.buy_thresholds) > 0:
+            if current_price <= config.buy_thresholds[0]:
+                print(f'Buying {config.symbol} for {current_price}')
+                new_order = engine.place_buy_order_with_market_price(balance_per_entry)
+                time.sleep(5)
+                add_order_info_to_csv(new_order)
+                config.entries -= 1
+                config.buy_thresholds.pop(0)
+                config.update_config()
 
-    new_order = {
-        "symbol": "LTCBTC",
-        "orderId": 1,
-        "clientOrderId": "myOrder1",
-        "price": "2.1",
-        "origQty": "1.0",
-        "executedQty": "0.0",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0.0",
-        "icebergQty": "0.0",
-        "time": 1499827319559
-    }
-    new_order2 = {
-        "symbol": "LTCBTC",
-        "orderId": 1,
-        "clientOrderId": "myOrder1",
-        "price": "0.1",
-        "origQty": "1.0",
-        "executedQty": "0.0",
-        "status": "NEW",
-        "timeInForce": "GTC",
-        "type": "LIMIT",
-        "side": "BUY",
-        "stopPrice": "0.0",
-        "icebergQty": "0.0",
-        "time": 1499827319559
-    }
-    # add_order_info_to_csv(new_order)
-    # add_order_info_to_csv(new_order2)
-    # orders = load_order_data()
-    # current_price = 1.9
-    # multiplied_price = current_price * (1 + 0.05)
-    # print(multiplied_price)
-    # print("BEFORE DROPPING ROWS:")
-    # print(orders)
-    # id_to_remove = return_orders_on_profit(orders, 0.05, current_price)
-    # remove_order_info_from_csv(id_to_remove)
-    orders = load_order_data()
-    # print("AFTER DROPPING ROWS:")
-    # print(orders)
-    for items in orders['origQty']:
-        print(items, type(items))
+        # [-] SELL ORDER SECTION [-]
+        orders = load_order_data()
+        if orders is not None:
+            # Check if current price is equal or greater by x% than price in order
+            # Return only the orders where above condition is met
+            # Then remove those orders from the original dataframe
+            # And update the updated dataframe to the csv file
+            orders_to_sell = return_orders_on_profit(orders, config.profit_mul, current_price)
+            if not is_df_empty(orders_to_sell):
+                for items in orders_to_sell['origQty']:
+                    engine.place_sell_order_with_market_price(items)
+                    time.sleep(5)
+                    config.entries += 1
+                    threshold_to_update = current_price * (1 - config.loss_mul)
+                    config.buy_thresholds.append(threshold_to_update)
+                    config.buy_thresholds = sorted(config.buy_thresholds, reverse=True)
+                    config.update_config()
+                remove_order_info_from_csv(orders_to_sell.index)
+
+        time.sleep(10)

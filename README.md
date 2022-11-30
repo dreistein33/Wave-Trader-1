@@ -31,3 +31,12 @@ pip install plotly
 - [ ] Confidence system, create points for every transation (Ex.: If the bot decides to buy a coin even under the buy price line, the confidence is low, so if it hits the stop loss later, the bot will stop operating)
 - [ ] If a new average has been created and the actual price still lower than the market price, buy the coin (since the price is lower than expected)
 - [ ] Make it work in a web panel
+
+# Installation:
+- Install Python >=3.10.4 (make sure pip is installed)
+- pip install -r requirements.txt
+
+# Instruction of usage:
+- Run ```bash python gui.py``` in terminal -> You can save there your configuration settings regarding symbol, balance etc.
+- When you're done with setting the config file run ```bash python bot.py``` in terminal
+- 
