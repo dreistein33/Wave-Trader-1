@@ -32,6 +32,9 @@ pip install plotly
 - [ ] If a new average has been created and the actual price still lower than the market price, buy the coin (since the price is lower than expected)
 - [ ] Make it work in a web panel
 
+[How to get API key](https://www.binance.com/en/support/faq/how-to-create-api-360002502072)
+!!! Make sure you selected Enable Reading and Enable Spot & Margin Trading !!!
+
 # Installation:
 - Install Python >=3.10.4 (make sure pip is installed)
 - pip install -r requirements.txt
@@ -39,4 +42,4 @@ pip install plotly
 # Instruction of usage:
 - Run ```python gui.py``` in terminal -> You can save there your configuration settings regarding symbol, balance etc.
 - When you're done with setting the config file run ```python bot.py``` in terminal
-- 
+
