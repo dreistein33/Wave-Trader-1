@@ -94,8 +94,8 @@ class Window(QMainWindow):
         self.api_button = QPushButton('SET API', self)
         self.api_button.clicked.connect(self.show_api_settings)
         self.api_button.move(150, 250)
-        self.install_pkgs_button = QPushButton('INSTALL PACKAGES', self)
-        self.install_pkgs_button.clicked.connect(self.install_pkgs)
+        self.install_pkgs_button = QPushButton('RESET ORDERS', self)
+        self.install_pkgs_button.clicked.connect(self.reset_orders)
         self.install_pkgs_button.resize(120, 35)
         self.install_pkgs_button.move(140, 300)
         self.dynamic_thresholds_cb = QCheckBox('Dynamic thresholds', self)
@@ -148,9 +148,10 @@ class Window(QMainWindow):
     def show_api_settings(self):
         self.w.show()
 
-    def install_pkgs(self):
-        from utils.waveutils import REQUIREMENTS_PATH
-        subprocess.call(f'pip install -r {REQUIREMENTS_PATH}')
+    def reset_orders(self):
+        from utils.waveutils import ORDERS_PATH
+        with open(ORDERS_PATH, 'w') as f:
+            pass
 
 
 app = QApplication(sys.argv)
